@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "exclude": []
+  // "include": ["src/**/*.types.test.tsx", "src/**/*.types.test.ts"],
+}

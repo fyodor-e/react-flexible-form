@@ -1,0 +1,49 @@
+# Field
+
+`Field` is a wrapper for frorm field controls.
+It gets `value`, `error`, `touched` and `dirty` props from `formControl`
+and renders component that is passes in `rffComponent` prop.
+
+```jsx
+<Field
+  rffFormControl={formControl}
+  rffName="firstName"
+  rffComponent={Input}
+/>
+```
+
+Different components need different props.
+For example html `<input />` has `onChange: (event: ChangeEvent) => void` and input value will be at `event.target.value`.
+But [`ReactSelect`](https://react-select.com/) has such `onChange: (value: SignleValue<T>)`, and `value` is the selected object.
+Same will apply how errors should be displayed and so on.
+<br />
+To be able to use `Field` with any compnent, optional prop [`useConvert`](api/useConvert) can be used.
+It will accept `rffFormControl` and `rffName` as arguments and should provide momoized `onChange`, `onBlur`, `value` and `error` props. Names of them can be different.
+Then `Field` can wrap any component.
+<br />
+See example with custom [`useConvert`](examples/custom-use-convert).
+
+### Props
+
+All props of the `<Field />` start with rff prefix (stands for React Flexible Form).
+This is to avoid name conflicts with rffComponent own props that if passed to `<Field />` and will be passed to `rffComponent` when rendering.
+
+- **`rffFormControl`** (Required) is a form control, return value of `useForm`
+- **`rffName`** (Required) path to the form prop in dotted notation. Like `obj.field`.
+- **`rffComponent`** (Required) component to render.
+- **`rffLoadingComponent`** component that is displayed when data is loading. Form is loading when `formControl.isLoading` is true.
+- **`rffUseConvert`** a hook that converts `formControl` to `value`, `error`, `touched`, `onChange` and `onBlur`.
+  Default implementation is [here](https://github.com/fyodor-e/react-flexible-form/blob/main/src/field/defaultUseConvert.ts)
+  Different components require different props. For example, HTML `<input />` element will require
+
+  ```jsx
+    value: string
+    onChange: (event: ChangeEvent) => void
+  ```
+
+  But [React Select](https://react-select.com/) has `onChange: (value: Value, ...) => void` so passing it to the `<Field />` will not work, because `onChange` is incompatible.
+  This is where `rffUseConvert` helps. It is possible to write `onChange` callback specifically for React Select and then just pass custom `useConvert` hook to any `<Field />` that wraps React Select.
+
+<br />
+
+`Field` will also accept all props of the `rffComponent` and will pass the thru.

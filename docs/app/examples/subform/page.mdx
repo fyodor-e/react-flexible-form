@@ -1,0 +1,93 @@
+import OrderForm from "./OrderForm.tsx";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+
+# Subform example
+
+<br />
+Consider following example. It is required to enter address
+information in different places in the UI. For example address
+of the user, address of the order, address of the store and so on.
+It is good idea to create address form and reuse it in several places.
+This is where `useSubform` come into play. It accepts `rffFormControl` from
+parent form and generate `rffFormControl` for subform.
+<br />
+Consider following entities.
+<br />
+```jsx
+type Order = {
+  orderNo: number;
+  carrier: string;
+  deliveryAddress: {
+    country: string;
+    state: string;
+    city: string;
+    zipCode: string;
+    street1: string;
+    street2?: string | undefined;
+  };
+};
+
+type Store = {
+  name: string
+  location: {
+  country: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  street1: string;
+  street2?: string | undefined;
+  }
+}
+
+````
+<br />
+To modify `deliveryAddress.country` we can use
+<br />
+
+```jsx
+  <Field
+    rffFormControl={rffFormControl}
+    rffName="deliveryAddress.country"
+    rffComponent={Input}
+  />
+```
+
+<br />
+But this way country input will be bound to `Order` and cannot be used
+with address of the `Store`. `useSubform` solves this problem.
+<br />
+```jsx
+  const addressrffFormControl = useSubform({
+    rffFormControl,
+    rffName: 'deliveryAddress',
+  })
+
+  return (
+    <Field
+      rffFormControl={addressrffFormControl}
+      rffName="country"
+      rffComponent={Input}
+    />
+  )
+```
+<br />
+Input for country is not bound to the `Order` and can be reused
+with other forms.
+<br />
+
+<Tabs tabs={['Example', 'OrderForm.tsx', 'AddressForm.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <OrderForm />
+    </ExampleLayout>
+  </Tab>
+  <Tab value='OrderForm.tsx'>
+    <RawCode fileName='subform/OrderForm.tsx' />
+  </Tab>
+  <Tab value='AddressForm.tsx'>
+    <RawCode fileName='subform/AddressForm.tsx' />
+  </Tab>
+</Tabs>

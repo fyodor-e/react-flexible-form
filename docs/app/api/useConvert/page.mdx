@@ -1,0 +1,44 @@
+# useConvert hook
+
+This hook is used to convert form's control data (values, errors, callbacks) to format accpetable by the Component passed as `rffComponent` prop.
+It can provide any props that are required by `rffComponent`. But most of the time it provide form related props like `value`, `onChange`, `onBlur` and `error`.
+And as these props may have differen names (i.e. `isInvalid` in place of `error`) or differen signatures, this hook can create correct props.
+This hook is part of `<Field />` customization and can be custom.
+Default implementation is [here](https://github.com/fyodor-e/react-flexible-form/blob/main/react-flexible-form/src/field/defaultUseConvert.ts).
+Hook should be passed to `<Field />` component as optional `rffUseConvert` prop.
+
+```jsx
+  <Field
+    rffUseConvert={useConvert}
+    // ...
+  />
+```
+
+For example, to be able to pass [React Select](https://react-select.com/home) as `rffComponent` `useConvert` code can be
+
+```jsx
+const useReactSelectConvert: ConvertHook<
+  any,
+  Pick<
+    ReactSelectProps<unknown, false, GroupBase<unknown>>,
+    "value" | "onChange"
+  >
+> = ({ formControl: { values, setFieldValue }, rffName }) => {
+  const value = getIn<any>({ name: rffName, values });
+  const onChange = useCallback<
+    NonNullable<
+      ReactSelectProps<unknown, false, GroupBase<unknown>>["onChange"]
+    >
+  >(
+    (value) => {
+      setFieldValue<any>(rffName, value);
+    },
+    [rffName, setFieldValue],
+  );
+
+  return {
+    value,
+    onChange,
+  };
+};
+```

@@ -1,0 +1,27 @@
+# useFieldArray
+
+`useFieldArray` is a hook help managing array in the form.
+It produce wrappers around `setFieldValue` to reduce boilerplate when managing arrays.
+
+```jsx
+const { append, prepend, insert, swap, move, update, replace, remove } =
+  useFieldArray({ formControl, name });
+```
+
+### Parameters
+
+- **`formControl`** is a result of calling parent's form `useForm`
+- **`name`** is a path to any array in the parent's value
+
+### Return value
+
+`useFieldArray` returns an object with array helpers.
+
+- **`append: (element: ArrType) => void;`** adds array element to the end of the array
+- **`prepend: (element: ArrType) => void;`** insert array element to the start of the array (at index 0)
+- **`insert: (index: number, element: ArrType) => void;`** insert array element to the specified index
+- **`swap: (from: number, to: number) => void;`** swaps array elements at the provided indexes
+- **`move: (from: number, to: number) => void;`** move element at index `from` to index `to`
+- **`update: (index: number, element: ArrType) => void;`** change element at `index`
+- **`replace: (elemets: ArrType[]) => void;`** overwrite array with new elements
+- **`remove: (...index: number[]) => void;`** remove one or several elements on the specified indexes

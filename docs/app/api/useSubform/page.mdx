@@ -1,0 +1,65 @@
+# useSubform
+
+`useSubform` is a hook to wrap subform. Subform is a collection of form controls but which is used as part of another form.
+Example is an address subform. Address subform can be created once and then reused in differenc forms, for example in user details form, order form, warehouse form and so on.
+`useSubform` will hide parent form and will return `formControl` compatible with sub form.
+
+```jsx
+const subFormControl = useSubform({ formControl, name });
+```
+
+For example
+
+```jsx
+  type Order = {
+    orderNo: number
+    warehouse: string
+    deliveryAddress: Address
+  }
+
+  type Address = {
+    city: string
+    state: string
+    street1: string
+    street2: string
+    zipCode: string
+    country: string
+  }
+```
+
+`formControl` of the parent form will have type `FormControl<Order>`
+and `formControl` of the address subform will have type `FormControl<Address>`.
+
+Validation of the subform should be done at the parent level. For eample, Yup validation for the form above may look like
+
+```jsx
+// parentFrom.tsx
+import { addressValidator } from "./addressSubform";
+
+const resolver = yupResolver(
+  Yup.object({
+    orderNo: Yup.number().required("Required"),
+    warehouse: Yup.string().required("Required"),
+    deliveryAddress: addressValidator,
+  }),
+);
+
+// addressSubform.tsx
+export const addressValidator = Yup.object({
+  country: Yup.string().required("Required"),
+  state: Yup.string().required("Required"),
+  city: Yup.string().required("Required"),
+  zipCode: Yup.string().required("Required"),
+  street1: Yup.string().required("Required"),
+  street2: Yup.string(),
+});
+```
+
+### Parameters
+
+- **`formControl`** is a result of calling parent's form `useForm`
+- **`name`** is a path to any object int the parent's value
+
+### Return value
+
+- **`formControl`** form control of the subform.

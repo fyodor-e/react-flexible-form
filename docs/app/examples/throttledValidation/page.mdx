@@ -1,0 +1,25 @@
+import AddressForm from "./AddressForm.tsx";
+import SimpleInput from "./SimpleInput.tsx";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+
+# Throttled Validation
+
+In complex forms doing validation after each change of any input (i.e. user clics a button on the keyboard) may be useless.
+So throttled or debounced validation can be implemented. This require to change internal of the form by providing custom `useValidate` hook
+
+<Tabs tabs={['Example', 'AddressForm.tsx', 'SimpleInput.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <AddressForm />
+    </ExampleLayout>
+  </Tab>
+  <Tab value='AddressForm.tsx'>
+    <RawCode fileName='throttledValidation/AddressForm.tsx' />
+  </Tab>
+  <Tab value='SimpleInput.tsx'>
+    <RawCode fileName='throttledValidation/SimpleInput.tsx' />
+  </Tab>
+</Tabs>

@@ -1,0 +1,76 @@
+# React Flexible Form
+
+### Install
+
+```jsx
+ npm i react-flexible-form react-flexible-form-resolvers yup
+```
+
+### Usage
+
+Example below requires [Yup](https://github.com/jquense/yup) installation
+
+```jsx
+import { useCallback } from 'react';
+import { Field, getInErrors, OnSubmit, useForm } from 'react-flexible-form'
+import { yupResolver } from 'react-flexible-form-resolvers'
+import * as Yup from 'yup'
+
+type Values = {
+  firstName: string,
+  lastName: string,
+}
+
+const resolver = yupResolver(Yup.object({
+  firstName: Yup.string().required('Required'),
+  lastName: Yup.string().required('Required')
+}))
+
+export default function SomeForm () {
+  const onSubmit = useCallback<OnSubmit<Values>>(
+    ({ formControl: { values } }) => {
+      alert(`Form values: \n ${JSON.stringify(values)}`);
+    },
+    [],
+  );
+
+  const formControl = useForm({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+    },
+    onSubmit,
+    resolver,
+  })
+
+  return (
+    <div
+      style={{
+        gap: "7px",
+        display: "flex",
+        flexDirection: "column",
+        width: '100%',
+        alignItems: 'center',
+      }}
+    >
+      <label>First Name</label>
+      <Field
+        rffFormControl={formControl}
+        rffName="firstName"
+        rffComponent="input"
+      />
+      <div style={{ color: "red", whiteSpace: 'pre' }}>{getInErrors({ errors: formControl.errors, name: 'firstName' }).join(', ') || ' '}</div>
+      <label>Last Name</label>
+      <Field
+        rffFormControl={formControl}
+        rffName="lastName"
+        rffComponent="input"
+      />
+      <div style={{ color: "red", whiteSpace: 'pre' }}>{getInErrors({ errors: formControl.errors, name: 'lastName' }).join(', ') || ' '}</div>
+      <button onClick={formControl.handleSubmit}>
+        Submit
+      </button>
+    </div>
+  )
+}
+```

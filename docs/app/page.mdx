@@ -1,0 +1,49 @@
+# Overview
+
+The main features of React Flexible Form (RSF for short) are:
+
+- State of the form can be internal (held by RSF) or external (held, for example, in Redux)
+- Do not depend on context (althrough it can be used)
+- Typesafe as much as possible (it is developed in TypeScript)
+- Customizable. Internal begavior of the form can be changed
+- Ability to create Subforms
+- Built-in loader component
+- Partial state updates. Object that contains updated field is changed.
+  For example
+  ```jsx
+  const values = {
+    user: { name: "John" },
+    address: { city: "London" },
+  };
+  ```
+  If `name` is updated, `user` and `values` will be changed. `address` will not change.
+  This means that `useEffect` subscribed to `user` ir `values` will fire, but `useEffect` subscribed to `address` will not.
+- Setter functions accept values or callbacks. `setFieldValue: (name: Name, value: (Values | (prev: Value) => Value))`
+
+## Form creation
+
+To create a form [`useForm`](api/useForm) hook should be called.
+At minimum it should have initial values property.
+Other common props are:
+
+- `resolver` for validation
+- `onSubmit` for form submission
+
+Optionally, `useForm` can be customized. For example, `setFieldValues` can be passed to keep state externally, custom internal hooks, like `useValidate`, etc.
+
+## Field
+
+`Field` component is used to wrap any form element, like input or combo.
+`Field` accepts at least `rffFormControl` (see `useForm` above), `rffName` which is the path to the property of the form, and `rffComponent` that will display value of the form field.
+`Field` will render `rffComponent` and pass to it a value extracted using `rffName`.
+It also provide default `onChange`, `onBlur` callbacks and `error`.
+
+## Subforms
+
+As all apps are built using reusable components, it can be required to reuse part of the form.
+For example, address form can be used in many places: to enter address of the user, address of the building, devivery address and so on.
+It can be a good idea to create address form once and the reuse it in several differen forms.
+<br />
+This can be done with [`useSubform`](#/api/useSubform) hook.
+`useSubform` will also generate `rffFormControl` for use inside subform.
+But itself it will accept `rffFormControl` from parent form and `rffName` with the path to a value of the

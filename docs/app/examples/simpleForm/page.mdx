@@ -1,0 +1,24 @@
+import SimpleForm from "./SimpleForm.tsx";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+
+# Simple Form
+
+This is basic example of the form.
+
+<br />
+First It uses `useForm` to create a form. Then `<Field />` is used to render
+controls.
+
+<Tabs tabs={['Example', 'SimpleForm.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <SimpleForm />
+    </ExampleLayout>
+  </Tab>
+  <Tab value='SimpleForm.tsx'>
+    <RawCode fileName='simpleForm/SimpleForm.tsx' />
+  </Tab>
+</Tabs>

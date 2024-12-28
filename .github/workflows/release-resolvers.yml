@@ -1,0 +1,29 @@
+name: Node.js Package
+
+on:
+  release:
+    types: [created]
+
+defaults:
+  run:
+    working-directory: ./resolvers
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deps
+        run: cd .. && npm ci
+      - name: Run tests
+        run: cd .. && npm run test
+      - name: Run build
+        run: npm run build
+      - run: cp README.md dist
+      - run: node ../packageJsonModifier.js package.json dist/package.json
+      - run: cd ./dist && npm config set //registry.npmjs.org/:_authToken=${NPM_PUBLISH} && npm publish
+        env:
+          NPM_PUBLISH: ${{secrets.NPM_PUBLISH}}

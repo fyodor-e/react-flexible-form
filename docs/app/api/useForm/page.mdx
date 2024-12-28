@@ -1,0 +1,194 @@
+# useForm
+
+useForm is used to create a `formControl`.
+`formControl` is then passed to each `<Field />`
+or can be used directly.
+It has all methods to change form state (like `setFieldValue`)
+and form start itselft (like `values`)
+
+```jsx
+import { useForm } from "react-flexible-form";
+
+const onSubmit = useCallback(() => {}, []);
+
+const formControl = useForm({
+  initialValues: { firstName: "", lastName: "" },
+  onSubmit,
+});
+```
+
+Essentially, `useForm` is a collection of default hooks that implement form functionality.
+First, it is checked where form state should be stored. If `setFieldValues`, `setFieldError`, `setFieldTouched` and `setFieldDirty` are not passed, they are created internally.
+Then it calls several hooks, `useValidate` to validate the form, `useInitialValues` to set initial values, `useDirty` to calculate if form is dirty and `useSubmitCreator` which create `handleSubmit` function.
+At the end, `rffFormControl` is created be memoizing results of the previous steps.
+`rffFormControl` includes all functions to manipulate a form.
+
+### Parameters
+
+- **`initialValues`** (Required)
+
+  - Values to initialize form with.
+  - And to compare current values with to detect if field is changed (dirty) or not.
+    Type of the initialValues will be used to infer `useForm` first type argument
+    if no other props are passed to `useForm`.
+    `initialValues` will be memorized only when they are not undefined. This can be used to wait for data from API and when data is loaded set initialValues to that data
+
+- **`onSubmit`** A function that will be called on submission of the form.
+  It will receive single argument of object type with two properties:
+  `formControl` is what `useForm` will return, but without `handleSubmit` and
+  `submitProp` which is optional argument that can be passed to `handleSubmit`.
+  `onSubmit` can be async and can optionally return any value that will be return value of `handleSubmit`.
+  `submitProp` and return value can be used to communicate with code which calls `handleSubmit` of `formControl`
+
+```jsx
+    onSubmit: (arg: {
+      rffFormControl: Omit<FormControl<Values>, "handleSubmit">;
+      submitProps: SubmitProps;
+    }) => Promise<SubmitReturn> | SubmitReturn
+```
+
+- **`resolver`** is used to validate form.
+  Validation is done by external library [@hookform/resolvers](https://www.npmjs.com/package/@hookform/resolvers)
+  Use of this library is optional, it is possible to write resolver manually.
+
+  ```jsx
+  type Resolver<Values extends object> = (
+    values: Values,
+    context: any | undefined,
+    options: ResolverOptions,
+  ) => Promise<ResolverResult<Values>> | ResolverResult<Values>;
+
+  type ResolverResult<Values extends object> =
+    | ResolverSuccess<Values>
+    | ResolverError<Values>;
+
+  type ResolverSuccess<Values extends object> = {
+    values: Values;
+    errors: {};
+  };
+
+  type ResolverError<Values extends object> = {
+    values: {};
+    errors: FormErrors<Values>;
+  };
+  ```
+
+- **`context?: any`** context which will be passed to resolver. Not used in any other place of the form.
+- **`criteriaMode?: "all" | "firstError"`** will be passed to resolver. Not used in any other place of the form.
+- **`values?: Values`** values of the form. Values can be passed from outside and they will replace values currently in the form.
+  Often used with `setFieldValue` to lift state outside of the form to parent component. `values` are not saved by the form and will override user entered values on each render.
+  For example
+
+  ```jsx
+  useForm({
+    values: { prop1: "str" },
+  });
+  ```
+
+  will make form useless, because user will not be able to change `prop1`. Either memoize `values` or manage form state in parent component and pass `setFieldValue` tigether wilt `values`.
+
+- **`setFieldValue?: SetField<Values>`** function to change `values`. Is used when values are stored outside of the form in parent component.
+  Arguments: `name` is the field name to change. Empty string ('') can be used to change all values of the form.
+  `value` is new value or a function `(prevValue: Value) => Value` like in `useState`.
+  <br />
+  Implementation can be
+
+  ```jsx
+  const [values, setValues] = useState<Values>(initialValues)
+
+  const setFieldValue = useCallback((name: any, value: SetterOrValue<any>) => {
+    setValues((prev) => {
+      const prevValue = getIn({ values: prev, name });
+      const newValue = typeof value === "function" ? value(prevValue) : value;
+      if (isChanged(prevValue, newValue))
+        return setIn({ values: prev, name, value: newValue });
+      else return prev;
+    });
+  }, []);
+  ```
+
+- **`errors: FormErrors<Values>`** errors of the form. Used when errors should be stored in parent component.
+- **`setFieldError: SetField<FormErrors<Values>>`** errors setter. Works same way as `setFieldValue`
+
+- **`touched: FormTouched<Values>`** touched of the form (which field is touched and which is not). Used when touched should be stored in parent component.
+- **`setFieldTouched: SetField<FormTouched<Values>>`** touched setter. Works same way as `setFieldValue`
+
+- **`dirty: FormTouched<Values>`** dirty of the form (which field is dirty and which is not). Used when dirty should be stored in parent component.
+- **`setFieldDirty: SetField<FormTouched<Values>>`** dirty setter. Works same way as `setFieldValue`
+
+- **`submitCount?: number`** submit count of the form. Used when submit count should be stored in parent component.
+- **`setSubmitCount?: (submitCount: SetterOrValue<number>) => void`** submit count setter. Works same way as `setFieldValue`.
+
+- **`isSubmitting?: boolean`** flag which is set when form is currently submitting. Used when submit flag should be stored in parent component.
+- **`setIsSubmitting?: (isSubmitting: SetterOrValue<boolean>) => void`** submit flag setter. Works same way as `setFieldValue`.
+
+- **`isLoading?: boolean`** flag which is set when form data loading. Used when loading flag should be stored in parent component.
+- **`setIsLoading?: (isLoading: SetterOrValue<boolean>) => void`** loading flag setter. Works same way as `setFieldValue`.
+
+### Parameters to customize form internals
+
+Parameters below are optional and are used to customize how form behave.
+
+- **`useFormSubmitCreator?: UseFormSubmitCreator<Values, SubmitProps, SubmitReturn>;`** is a hook which is used to override default submission process.
+  Default implementations is [here](https://github.com/fyodor-e/react-flexible-form/blob/main/src/useForm/defaultUseFormSubmitCreator.ts)
+
+  Default submission process is:
+
+  - `formControl.handleSubmit` is called with optional `SubmitProp`
+  - All fields are touched
+  - resolver is run to validate the form
+  - If any errors found, submission stopped
+  - If no errors found, `isSubmitting` flag is set
+  - `onSubmit` is called with optional `SubmitProp`
+  - Return value of `onSubmit` become return value of `handleSubmit`
+    And it can be completely overrided with `useFormSubmitCreator`
+
+- **`useValidate`** is a hook to validate the form. It run on each render and sets errors if validation yeilds errors.
+  It also return `validate` function that is passed to `useFormSubmitCreator`. Default implementation is [here](https://github.com/fyodor-e/react-flexible-form/blob/main/src/useForm/defaultUseValidate.ts)
+
+- **`useDirty`** is a hook to detect if field was changed (dirty). Default implementation is [here](https://github.com/fyodor-e/react-flexible-form/blob/main/src/useForm/defaultUseDirty.ts)
+
+- **`useInitialValues`** is a hook to set initial values of the form. They are used to detect if field become dirty or not and to initializa form.
+  Default inplementation is [here](https://github.com/fyodor-e/react-flexible-form/blob/main/src/useForm/defaultUseInitialValues.ts)
+
+### Results
+
+`useForm` returns `formControl` object which represents the form.
+
+- **`values: Values`** current values of the form
+- **`errors: FormErrors<Values>`** errors of the form.
+- **`touched: FormTouched<Values>`** if the field is touched or not (got focus).
+- **`errors: FormTouched<Values>`** if the field is dirty (changed).
+- **`setFieldValue: (name: Name, value: SetterOrValue<Value>)`** a function to change a value.
+  If name if empty string - all form values will be changed
+  `name` is type checked. It should be dot notation of the path.
+  For example
+
+```jsx
+    type Values = {
+      firstName: string
+      lastName: string
+      age: number
+      preferences: {
+        sendEmail: boolean
+        sendSms: boolean
+      }
+    }
+```
+
+    `name` can be `firstName`, `lastName`, `age`, `preferences`, `preferences.sendEmail`, `preferences.sendSms` or ''.
+    `value` is a value to set or a function `(prev: Value) => Value` (like in React's setState).
+    `value` is also typechecked. If `name` is `age`, `value` should be `number` or function returning `number`.
+
+- **`setFieldError: (name: Name, error: SetterOrValue<FormErrors<Value>>)`** errors setter of the form. Behave same way as `setFiledValue`
+- **`touched: (name: Name, touched: SetterOrValue<FormTouched<Value>>)`** touched setter of the form. Behave same way as `setFiledValue`
+- **`errors: (name: Name, dirty: SetterOrValue<FormDirty<Value>>)`** dirty setter of the form. Behave same way as `setFiledValue`
+- **`submitCount: number`** count of submits. Is incremented in `useFormSubmitCreator` hook on each submit attempt.
+- **`isSubmitting: boolean`** flag which is set when form is submitting. Is set in `useFormSubmitCreator` when from do not have errors and `onSubmit` handler is about to be called. Should be reset in `onSubmit` handler.
+- **`setIsSubmitting: (isSubmitting: SetterOrValue<boolean>) => void`** submit flag setter. Works same way as `setFieldValue`.
+- **`handleSubmit`** submit function which should be called to submit the form. It can take optional argument which will be passed to `onSubmit` handler.
+  Return value of `onSubmit` will become return value of `handleSubmit`
+- **`isLoading: boolean`** flag to indicate that form data is initially loading. For example, when form is used to edit existing entity.
+  When this falg is true `<Field />` components will render `rffLoadingComponent`. This is effective way to create form skeleton.
+  This flag is not set or reset automatically. It should be modified manually.
+- **`setIsLoading: (isLoading: SetterOrValue<boolean>) => void`** loading flag setter. Works same way as `setFieldValue`.

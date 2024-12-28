@@ -1,0 +1,42 @@
+import FormWithLoader from "./FormWithLoader.tsx";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+import ChakraIframeProvider from '../../../components/ChakraIframeProvider.tsx'
+
+# Form with loader
+
+Forms can be used to modify existing data.
+And data to be modified should be first loaded into the form.
+During data fetching skeleton controls can be displayed in place of real form.
+
+```
+  <Field
+    rffFormControl={rffFormControl}
+    rffName="country"
+    rffComponent={Input}
+    rffLoadingComponent={LoadingComonent}
+  />
+```
+
+`rffLoadingComponent is doing this. This component will be displayed
+when data is loading. `rffDisplayLoading` can be used to control
+if loader should be displayed or form control.
+
+<br />
+When data is loading is determined by `isLoading` parameter of the `FormProps`
+and `FormControl`.
+
+<Tabs tabs={['Example', 'FormWithLoader.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <ChakraIframeProvider>
+        <FormWithLoader />
+      </ChakraIframeProvider>
+    </ExampleLayout>
+  </Tab>
+  <Tab value='FormWithLoader.tsx'>
+    <RawCode fileName='loader/FormWithLoader.tsx' />
+  </Tab>
+</Tabs>

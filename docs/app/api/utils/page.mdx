@@ -1,0 +1,120 @@
+# Utils
+
+React Flexible Form implement a banch of utils that can be used with or without the form.
+
+### setIn
+
+Change specified property of the object. Returns a new object
+
+```jsx
+export const setIn = <
+  Values,
+  Name extends KeyPaths<Values> = KeyPaths<Values>,
+>({
+  values,
+  name,
+  value,
+}: {
+  values: Values;
+  name: Name;
+  value: DeepPick<Values, Name>;
+}): Values
+```
+
+  - **values** - object to be changed
+  - **name** - path to be changed
+  - **value** - new value that should be written to the path
+
+Function will touch original `values`, but create a new one.
+In the new object only value referenced by path and all container objects will be changed.
+<br />
+For example
+```jsx
+const values: {
+  items: { item: string }[],
+  address {},
+} = {
+  items: [],
+  address {},
+}
+const newValues = setIn({ values, name: 'items.0', value: { item: '123' } })
+```
+
+`newValues` will have change `items` (`values.items !== newValues.items`) and `newValues` itself (`values !== newValues`).
+But `address` will not change (`values.address !== newValues.address`)
+This is usefull when subscribing `useEffect` to object properties. It will not fire if subscribed to address, as it should be.
+<br />
+
+`setIn` is used in `setFieldValue` and other setter functions
+
+`setIn` check types, In example above, type of `value` should be `{ item: string }`
+
+### getIn
+
+Will return a value from the object specified by the path.
+```jsx
+export const getIn = <
+  Values,
+  Name extends KeyPaths<Values> = KeyPaths<Values>,
+>({
+  values,
+  name,
+}: {
+  values: Values;
+  name: Name;
+}): DeepPick<Values, Name>
+```
+
+For example
+```jsx
+const values: {
+  items: { item: string }[],
+  address {},
+} = {
+  items: [{ item: '123' }],
+  address {},
+}
+const res = getIn({ values, name: 'item.0' })
+```
+
+`res` will be `{ item: '123' }`. Type of return value is also correctly inferred from the path.
+In example above type will be `{ item: string }`
+
+### getInErrors
+
+Provided `errors` from `formControl` and path (`name`), returns array of errors as strings.
+
+```jsx
+const getInErrors = <
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  Errors extends FormErrors<{}> = FormErrors<{}>,
+  Name extends KeyPaths<Errors> = KeyPaths<Errors>,
+>({
+  errors,
+  name,
+}: {
+  errors: Errors;
+  name: Name;
+}): string[]
+```
+
+### isChanged
+
+Recursively compares all props of 2 objects. Is used to eliminate unnessesary renders by preventing calling `setFieldValue` when nothing was changed.
+
+```jsx
+export const isChanged = <Values extends object = object>(
+  a: Values,
+  b: Values,
+): boolean
+```
+
+### deepSet
+
+Will set object properties that are present in new
+And will not touch props that are present in old but absent in new
+
+```jsx
+const deepSet = <O>(old: O, new: O): O
+```
+

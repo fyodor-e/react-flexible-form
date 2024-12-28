@@ -1,0 +1,27 @@
+import CustomUseConvert from "./CustomUseConvert.tsx";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+
+# Custom useConvert
+
+`useConvert` is used to adopt form props to the form component.
+For example [React Date Picker](https://www.npmjs.com/package/react-datepicker) wants these essential props
+
+```jsx
+selected: Date | null
+onChange: (date: Date | null) => void
+```
+
+This is where `useConvert` come into play. It accepts `rffFormControl`
+and return props suitable to React Date Picker.
+
+<br />
+`<Field />` with React Date Picker can be reused in several places in the App,
+as `useConvert` is not bound to a specific form.
+
+<Tabs tabs={['Example', 'CustomUseConvert.tsx']} defaultSelected="Example">
+  <Tab value='Example'><ExampleLayout><CustomUseConvert /></ExampleLayout></Tab>
+  <Tab value='CustomUseConvert.tsx'><RawCode fileName='customUseConvert/CustomUseConvert.tsx' /></Tab>
+</Tabs>

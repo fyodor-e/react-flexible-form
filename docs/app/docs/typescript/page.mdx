@@ -1,0 +1,110 @@
+# Usage with TypeScript
+
+React Flexible Forms is developed using TypeScript.
+<br />
+Consider following form data model
+
+```jsx
+type Values = {
+  orderNo: string
+  items: {
+    itemNo: string
+    itemDescription: string
+  }[]
+}
+```
+
+### useForm
+
+`useForm`'s `formControl` will be typed according to provided `Values`
+
+### Field
+
+`<Field />` component has `rffName` prop which is the path to the prop in `Values`
+
+```jsx
+  <Field
+    rffName='orderNo' // Correct
+    // ...
+  />
+
+  <Field
+    rffName='items.1.itemNo' // Correct
+    // ...
+  />
+
+  <Field
+    rffName='items.1.anotherProp' // Error - no property anotherProp
+    // ...
+  />
+```
+
+Also type of the value that `<Field />` provides to the component from `rffComponent` prop is also checked
+
+```jsx
+  <Field
+    rffName='orderNo'
+    // StringInput's value prop should be of type string
+    rffComponent={StringInput}
+    // ...
+  >
+
+  <Field
+    rffName='items.1'
+    // ItemInput's value prop should be of type
+    // {
+    //   itemNo: string
+    //   itemDescription: string
+    // }
+    rffComponent={ItemInput}
+    // ...
+  >
+```
+
+If type of the `value` prop of the `rffComponent` does not match type of the prop in `Values` typescript will emit error asking to provide `value` to the `<Field />`
+
+<br />
+`<Field />` component inherit props of the `rffComponent`.
+
+```jsx
+  const SomeInput = (props: { label: string, /* other props */ }) => { /* ... */ }
+  // ...
+  <Field
+    rffCompontent={SomeInput}
+    label='Label' // label should be provided as it is required prop of the <SomeInput />
+    // ...
+  />
+```
+
+### setFieldValue
+
+This is form value setter.
+
+```jsx
+  formControl.setFieldValue('orderNo', '123') // Correct
+  formControl.setFieldValue('orderNo', 123) // Incorrect - should be a string
+
+  formControl.setFieldValue('items.1', { itemNo: '123', itemDescription: 'Description' }) // Correct
+```
+<br />
+It is also possible to pass a function as a setter. It will be typed according to the first argument
+```jsx
+  formControl.setFieldValue('items.0', (prev) => ({ ...prev, itemDescription: 'Description' }))
+```
+<br />
+And it is possible to overwrite whole values object by passing empty string as first argument
+
+```jsx
+  formControl.setFieldValue('', { orderNo: '234', items: [] })
+```
+
+### Limitations
+
+- `Values` are well processed up to 5 depthness level
+- It is assumed that `Values` will not have union fields
+  ```jsx
+  // Will not work
+  type IncorrectValues = {
+    prop1: { prop2: string } | { prop3: number }
+  }
+  ```

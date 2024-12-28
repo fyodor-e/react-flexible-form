@@ -1,0 +1,25 @@
+import MaterialUiForm from "./MaterialUiForm.tsx";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+import MaterialUiIframeProvider from '../../../components/MaterialUiIframeProvider.tsx'
+
+# Form based on Material UI components
+
+Example of using React Flexible Form with Material UI library.
+Material UI form controls have `helperText` property to display text under control.
+To pass error text to `helperText` custom `useConvert` hook is used with the `<Field />` component.
+
+<Tabs tabs={['Example', 'MaterialUiForm.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <MaterialUiIframeProvider>
+        <MaterialUiForm />
+      </MaterialUiIframeProvider>
+    </ExampleLayout>
+  </Tab>
+  <Tab value='MaterialUiForm.tsx'>
+    <RawCode fileName='materialUi/MaterialUiForm.tsx' />
+  </Tab>
+</Tabs>

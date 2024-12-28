@@ -1,0 +1,23 @@
+import FormWithArray from "./FormWithArray";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+import ChakraIframeProvider from '../../../components/ChakraIframeProvider.tsx'
+
+# Form with array
+
+To work with arrays there is a hook `useFormArray` which will return an object with methods to manage an array stored inside form.
+
+<Tabs tabs={['Example', 'FormWithArray.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <ChakraIframeProvider>
+        <FormWithArray />
+      </ChakraIframeProvider>
+    </ExampleLayout>
+  </Tab>
+  <Tab value='FormWithArray.tsx'>
+    <RawCode fileName='formWithArray/FormWithArray.tsx' />
+  </Tab>
+</Tabs>

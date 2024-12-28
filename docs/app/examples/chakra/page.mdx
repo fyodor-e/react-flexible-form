@@ -1,0 +1,33 @@
+import ChakraAddressForm from "./ChakraAddressForm.tsx";
+import ChakraIframeProvider from '../../../components/ChakraIframeProvider.tsx'
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+
+# Form built using Chakra UI components
+
+Below is the example how to integrate with Chakra UI.
+
+<br />
+There is a custom `<ChakraFormInput />` component which accepts essential form
+props, `onChange`, `onBlur`, `error` and `touched` and renders Chakra's input,
+label and helper text under the input.
+<br />
+Alternative way is to use `useConvert` hook to adopt form props to component.
+
+<Tabs tabs={['Example', 'ChakraAddressForm.tsx', 'ChakraFormInput.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <ChakraIframeProvider>
+        <ChakraAddressForm />
+      </ChakraIframeProvider>
+    </ExampleLayout>
+  </Tab>
+  <Tab value='ChakraAddressForm.tsx'>
+    <RawCode fileName='chakra/ChakraAddressForm.tsx' />
+  </Tab>
+  <Tab value='ChakraFormInput.tsx'>
+    <RawCode fileName='chakra/ChakraFormInput.tsx' />
+  </Tab>
+</Tabs>

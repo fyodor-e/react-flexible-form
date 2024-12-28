@@ -1,0 +1,26 @@
+{
+  "name": "react-flexible-form",
+  "version": "1.0.0",
+  "description": "React Flexible Form",
+  "main": "src/index.ts",
+  "scripts": {
+    "test:types": "tsc --project tsconfig.types.test.json",
+    "build": "tsup src !src/**/*.test.*",
+    "copy": "copy /Y README.md dist  && copy /Y package.json dist"
+  },
+  "author": "Fyodor Yemelyanenko",
+  "license": "MIT",
+  "devDependencies": {
+    "react-flexible-form-resolvers": "*",
+    "yup": "^1.5.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "react",
+    "form",
+    "forms",
+    "react-flexible-form"
+  ]
+}

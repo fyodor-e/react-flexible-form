@@ -1,0 +1,29 @@
+import FormStateInRedux from "./FormStateInRedux";
+import RawCode from '../../../components/RawCode.tsx'
+import ExampleLayout from '../../../components/ExampleLayout.tsx'
+import Tabs from '../../../components/Tabs.tsx'
+import Tab from '../../../components/Tab.tsx'
+
+# Form state in Redux
+
+As form state can be stored in parent component it also can be stored in Redux.
+It is required to extract `value` and create `setFormValue` function.
+Value is extracted from Redux store with `useSelect`
+
+```jsx
+const values = useSelector(valuesSelector);
+```
+
+`setFieldValue` can be created globally as it only use store.
+It is important to not recreate `setFieldValue` function on each `values` change.
+
+<Tabs tabs={['Example', 'FormStateInRedux.tsx']} defaultSelected="Example">
+  <Tab value='Example'>
+    <ExampleLayout>
+      <FormStateInRedux />
+    </ExampleLayout>
+  </Tab>
+  <Tab value='FormStateInRedux.tsx'>
+    <RawCode fileName='formStateInRedux/FormStateInRedux.tsx' />
+  </Tab>
+</Tabs>

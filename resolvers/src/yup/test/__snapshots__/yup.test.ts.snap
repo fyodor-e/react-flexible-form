@@ -1,0 +1,185 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should return a single error from yupResolver when validation fails 1`] = `
+{
+  "errors": {
+    "birthYear": {
+      "message": "birthYear must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"birthYear"\`).",
+      "type": "typeError",
+    },
+    "like": [
+      {
+        "id": {
+          "message": "like[0].id must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"z"\`).",
+          "type": "typeError",
+        },
+        "name": {
+          "message": "like[0].name is a required field",
+          "type": "optionality",
+        },
+      },
+    ],
+    "password": {
+      "message": "One uppercase character",
+      "type": "matches",
+    },
+    "username": {
+      "message": "username is a required field",
+      "type": "optionality",
+    },
+  },
+}
+`;
+
+exports[`should return a single error from yupResolver with \`mode: sync\` when validation fails 1`] = `
+{
+  "errors": {
+    "birthYear": {
+      "message": "birthYear must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"birthYear"\`).",
+      "type": "typeError",
+    },
+    "like": [
+      {
+        "id": {
+          "message": "like[0].id must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"z"\`).",
+          "type": "typeError",
+        },
+        "name": {
+          "message": "like[0].name is a required field",
+          "type": "optionality",
+        },
+      },
+    ],
+    "password": {
+      "message": "One uppercase character",
+      "type": "matches",
+    },
+    "username": {
+      "message": "username is a required field",
+      "type": "optionality",
+    },
+  },
+}
+`;
+
+exports[`should return all the errors from yupResolver when validation fails with \`validateAllFieldCriteria\` set to true 1`] = `
+{
+  "errors": {
+    "birthYear": {
+      "message": "birthYear must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"birthYear"\`).",
+      "type": "typeError",
+      "types": {
+        "typeError": "birthYear must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"birthYear"\`).",
+      },
+    },
+    "like": [
+      {
+        "id": {
+          "message": "like[0].id must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"z"\`).",
+          "type": "typeError",
+          "types": {
+            "typeError": "like[0].id must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"z"\`).",
+          },
+        },
+        "name": {
+          "message": "like[0].name is a required field",
+          "type": "optionality",
+          "types": {
+            "optionality": "like[0].name is a required field",
+          },
+        },
+      },
+    ],
+    "password": {
+      "message": "One uppercase character",
+      "type": "matches",
+      "types": {
+        "matches": "One number",
+        "min": "Must be at least 8 characters in length",
+      },
+    },
+    "username": {
+      "message": "username is a required field",
+      "type": "optionality",
+      "types": {
+        "optionality": "username is a required field",
+      },
+    },
+  },
+}
+`;
+
+exports[`should return all the errors from yupResolver when validation fails with \`validateAllFieldCriteria\` set to true and \`mode: sync\` 1`] = `
+{
+  "errors": {
+    "birthYear": {
+      "message": "birthYear must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"birthYear"\`).",
+      "type": "typeError",
+      "types": {
+        "typeError": "birthYear must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"birthYear"\`).",
+      },
+    },
+    "like": [
+      {
+        "id": {
+          "message": "like[0].id must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"z"\`).",
+          "type": "typeError",
+          "types": {
+            "typeError": "like[0].id must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`"z"\`).",
+          },
+        },
+        "name": {
+          "message": "like[0].name is a required field",
+          "type": "optionality",
+          "types": {
+            "optionality": "like[0].name is a required field",
+          },
+        },
+      },
+    ],
+    "password": {
+      "message": "One uppercase character",
+      "type": "matches",
+      "types": {
+        "matches": "One number",
+        "min": "Must be at least 8 characters in length",
+      },
+    },
+    "username": {
+      "message": "username is a required field",
+      "type": "optionality",
+      "types": {
+        "optionality": "username is a required field",
+      },
+    },
+  },
+}
+`;
+
+exports[`should return an error from yupResolver when validation fails and pass down the yup context 1`] = `
+{
+  "errors": {
+    "name": {
+      "message": "name must be at least 6 characters",
+      "type": "min",
+    },
+  },
+}
+`;
+
+exports[`should return correct error message with using yup.test 1`] = `
+{
+  "errors": {},
+}
+`;
+
+exports[`should throw an error without inner property 1`] = `
+{
+  "errors": {
+    "value": {
+      "message": "value must be a \`number\` type, but the final value was: \`NaN\` (cast from the value \`""\`).",
+      "type": "typeError",
+    },
+  },
+}
+`;
